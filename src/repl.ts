@@ -1,13 +1,11 @@
 import type { State } from "./state.js"
-import { getCommands } from "./get_commands.js"
-import { createInterface } from "node:readline"
 
 export function cleanInput(input: string): string[] {
     const splitted = input.toLowerCase().split(/\s+/) 
     return splitted.filter(Boolean)
 }
 
-export function startREPL(state: State) {
+export async function startREPL(state: State) {
     state.readline.prompt()
 
     state.readline.on('line', async (input) => {
@@ -19,16 +17,18 @@ export function startREPL(state: State) {
         }
     
         const commandName = words[0]
+        const command = state.commands[commandName]
 
-        if (commandName in state.commands) {
-            try {
-                state.commands[commandName].callback(state)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        else {
+        if (!command) {
             console.log("Unknown command\n")
+            state.readline.prompt()
+            return
+        }
+
+        try {
+            await command.callback(state)
+        } catch (error) {
+            console.log(error)
         }
 
         state.readline.prompt()
