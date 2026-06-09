@@ -28,15 +28,7 @@ export class PokeAPI {
   }
 
   async fetchLocation(locationName: string): Promise<Location> {
-    const url = `${PokeAPI.baseURL}${locationName}`
-
-    const response = await fetch(url)
-    if (!response.ok) {
-        throw new Error (`Response status: ${response.status}`)
-    }
-
-    const result = await response.json() as Location
-    return result
+    // TERAZ TO
   }
 }
 
@@ -53,14 +45,10 @@ export type ShallowLocations = {
 };
 
 export type Location = {
-  id: number,
-  name: string,
-  game_index: number,
-  encounter_method_rates: [],
-  location: {
-    name: string,
-    url: string,
+  pokemon_encounters: {
+    pokemon: {
+      name: string,
+      url: string,
+    }
   }
-  names: [],
-  pokemon_encounters: []
 };
