@@ -19,6 +19,8 @@ export async function startREPL(state: State) {
         const commandName = words[0]
         const command = state.commands[commandName]
 
+        const args = words.slice(1)
+
         if (!command) {
             console.log("Unknown command\n")
             state.readline.prompt()
@@ -26,7 +28,7 @@ export async function startREPL(state: State) {
         }
 
         try {
-            await command.callback(state)
+            await command.callback(state, ...args)
         } catch (error) {
             console.log(error)
         }

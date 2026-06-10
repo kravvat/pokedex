@@ -2,7 +2,7 @@ import { Cache } from "./pokecache.js"
 
 export class PokeAPI {
   private static readonly baseURL = "https://pokeapi.co/api/v2/";
-  private static readonly locationEndpoint = "location-area"
+  private static readonly locationEndpoint = "location-area/"
   private cache = new Cache (1000 * 60 * 5)
 
   constructor() {}
@@ -28,7 +28,23 @@ export class PokeAPI {
   }
 
   async fetchLocation(locationName: string): Promise<Location> {
-    // TERAZ TO
+    const url = `${PokeAPI.baseURL}${PokeAPI.locationEndpoint}${locationName}`
+
+    const cached = this.cache.get<Location>(url)
+    if (cached) {
+      return cached
+    }
+
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error (`Response status: ${response.status}`)
+    }
+
+    const result = await response.json() as Location
+
+    this.cache.add(url, result)
+
+    return result
   }
 }
 
@@ -50,5 +66,5 @@ export type Location = {
       name: string,
       url: string,
     }
-  }
+  }[]
 };
