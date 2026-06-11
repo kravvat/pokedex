@@ -61,3 +61,27 @@ export async function commandExplore(state: State, ...args: string[]): Promise<v
         console.log(` - ${encounter.pokemon.name}`)
     }
 }
+
+export async function commandCatch(state: State, ...args: string[]): Promise<void> {
+    const pokemonName = args[0]
+
+    if (!pokemonName) {
+        console.log("Please provide a Pokemon name")
+        return
+    }
+
+    console.log(`Throwing a Pokeball at ${pokemonName}...`)
+
+    const pokemon = await state.pokeapi.fetchPokemon(pokemonName)
+
+    const difficultyRoll= Math.random() * pokemon.base_experience
+
+    if (difficultyRoll > 37) {
+        console.log(`${pokemon.name} escaped!`)
+        return
+    }
+    
+    console.log(`${pokemon.name} was caught!`)
+
+    state.pokedex[pokemon.name] = pokemon
+}

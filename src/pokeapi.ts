@@ -3,6 +3,7 @@ import { Cache } from "./pokecache.js"
 export class PokeAPI {
   private static readonly baseURL = "https://pokeapi.co/api/v2/";
   private static readonly locationEndpoint = "location-area/"
+  private static readonly pokemonEndpoint = "pokemon/"
   private cache = new Cache (1000 * 60 * 5)
 
   constructor() {}
@@ -46,7 +47,28 @@ export class PokeAPI {
 
     return result
   }
+  
+  async fetchPokemon(pokemonName: string): Promise<Pokemon> {
+    const url = `${PokeAPI.baseURL}${PokeAPI.pokemonEndpoint}${pokemonName}`
+
+    const cached = this.cache.get<Pokemon>(url)
+    if (cached) {
+      return cached
+    }
+
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error (`Response status: ${response.status}`)
+    }
+
+    const result = await response.json() as Pokemon
+
+    this.cache.add(url, result)
+
+    return result
+  }
 }
+
 
 export type ShallowLocations = {
   count: number,
@@ -68,3 +90,8 @@ export type Location = {
     }
   }[]
 };
+
+export type Pokemon = {
+  name: string,
+  base_experience: number,
+}
