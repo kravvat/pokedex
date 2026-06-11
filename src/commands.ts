@@ -85,3 +85,41 @@ export async function commandCatch(state: State, ...args: string[]): Promise<voi
 
     state.pokedex[pokemon.name] = pokemon
 }
+
+export async function commandInspect(state: State, ...args: string[]): Promise<void> {
+    const pokemonName = args[0]
+
+    if (!pokemonName) {
+        console.log("Please provide a Pokemon name")
+        return
+    }
+
+    console.log(`Inspecting ${pokemonName}...`)
+
+    const pokemon = state.pokedex[pokemonName]
+
+    if (!pokemon) {
+        console.log(`You have not yet caught ${pokemonName}\nTry using: catch ${pokemonName}`)
+        return
+    }
+
+    const statLines = pokemon.stats.map((stat) => {
+        return `  -${stat.stat.name}: ${stat.base_stat}`
+    })
+
+    const typeLines = pokemon.types.map((type) => {
+        return `  -${type.type.name}`
+    })
+
+    const lines = [
+        `Name: ${pokemon.name}`,
+        `Height: ${pokemon.height}`,
+        `Weight: ${pokemon.weight}`,
+        "Stats:",
+        ...statLines,
+        "Types:",
+        ...typeLines,
+    ]
+
+    console.log(lines.join("\n"))
+}
