@@ -104,11 +104,11 @@ export async function commandInspect(state: State, ...args: string[]): Promise<v
     }
 
     const statLines = pokemon.stats.map((stat) => {
-        return `  -${stat.stat.name}: ${stat.base_stat}`
+        return ` - ${stat.stat.name}: ${stat.base_stat}`
     })
 
     const typeLines = pokemon.types.map((type) => {
-        return `  -${type.type.name}`
+        return ` - ${type.type.name}`
     })
 
     const lines = [
@@ -122,4 +122,17 @@ export async function commandInspect(state: State, ...args: string[]): Promise<v
     ]
 
     console.log(lines.join("\n"))
+}
+
+export async function commandPokedex(state: State, ...args: string[]): Promise <void> {
+    if (Object.keys(state.pokedex).length === 0) {
+        console.log("You have not caught any Pokemon yet\nTry using: catch <POKEMON_NAME>")
+        return
+    }
+
+    console.log("Your Pokedex:")
+
+    for (const pokemon in state.pokedex) {
+        console.log(` - ${state.pokedex[pokemon].name}`)
+    }
 }

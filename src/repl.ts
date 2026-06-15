@@ -22,7 +22,7 @@ export async function startREPL(state: State) {
         const args = words.slice(1)
 
         if (!command) {
-            console.log("Unknown command\n")
+            console.log("Unknown command")
             state.readline.prompt()
             return
         }
